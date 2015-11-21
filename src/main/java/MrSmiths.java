@@ -12,7 +12,6 @@ public class MrSmiths {
     }
     private static void responses() {
         Map<Integer, String> matt = new HashMap<>();
-        matt.put(0, "Teenagers are stupid.");
         matt.put(1, "Check your level of understanding.");
         matt.put(2, "Pubbrric Boorean.");
         matt.put(3, "Al Gore rhythmns.");
@@ -22,7 +21,7 @@ public class MrSmiths {
         matt.put(7, "This is a rant.");
         matt.put(8, "Please take out a piece of paper for the computer science test.");
         matt.put(9, "WHAT!");
-        matt.put(10, "Internalize knowledge");
+        matt.put(10, "Teenagers are stupid.");
         int number = (int) ((Math.random() * 10) % matt.size());
         System.out.println(number);
     }
