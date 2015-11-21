@@ -23,9 +23,7 @@ public class MrSmiths {
         matt.put(8, "Please take out a piece of paper for the computer science test.");
         matt.put(9, "WHAT!");
         matt.put(10, "Internalize knowledge");
-        int responses = 0;
-        responses += matt.size() > 9 ? responses += (matt.size() - 9) : 0;
-        int number = (int) ((Math.random() * 10) + responses);
+        int number = (int) ((Math.random() * 10) % matt.size());
         System.out.println(number);
     }
 }

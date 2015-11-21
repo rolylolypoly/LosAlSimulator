@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
@@ -11,7 +12,7 @@ import java.util.regex.Matcher;
  * Created by Will on 11/20/2015.
  */
 public class Server {
-    public  static void server(int port) throws IOException {
+    public static void server(int port) throws IOException {
         port = 56789;
         try (
                 ServerSocket serverSocket = new ServerSocket(port);
@@ -33,16 +34,17 @@ public class Server {
                 out.println("Please stand by for a human operator...");
                 TimeUnit.SECONDS.sleep((long) (Math.random() * 10));
                 out.println("Hi");
-                if ((int)(Math.random() * 100) ==3) {
+                if ((int) (Math.random() * 100) == 3) {
                     out.println("SURPRISE SMITH!");
                     MrSmiths.talk();
-                }
-                else {
+                } else {
                     while ((inputLine = in.readLine()) != null) {
-                        outputLine = human(inputLine);
-                        out.println(outputLine);
                         if (inputLine.equals("Bye."))
                             break;
+                        outputLine = human(inputLine);
+                        if (outputLine.equals("0xzfl1n4klhuioyxzcv"))
+                            break;
+                        out.println(outputLine);
                     }
                 }
             }
@@ -54,9 +56,30 @@ public class Server {
             e.printStackTrace();
         }
     }
+
     private static String human(String input) {
-        input = (input == "hello?") ? "yes" : (input == "hello.") ? "hi" : (input == "hello") ? "hi" : "rawr";
+        input = (input == "hello?") ? "yes, this is dog"
+                : (input == "hello.") ? "hi, i am tech support, you have virus"
+                : (input == "hello") ? "no one is home"
+                : emptyResponse();
         return input;
+    }
+
+    private static int patience = (int) (Math.random() * 10);
+    private static HashMap<Integer, String> responses;
+
+    static {
+        responses = new HashMap<>();
+        responses.put(0, "Is anyone there?");
+        responses.put(1, "Hello?");
+        responses.put(2, "If you do not respond, this session will be close");
+        responses.put(3, "...");
+    }
+
+    private static String emptyResponse() {
+        patience--;
+        if (patience <= 0) return "0xzfl1n4klhuioyxzcv";
+        return responses.get((int) ((Math.random() * 10) % responses.size()));
     }
 
 }
