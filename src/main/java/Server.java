@@ -8,11 +8,12 @@ import java.net.Socket;
 /**
  * Created by Will on 11/20/2015.
  */
-public class Server implements Runnable{
+public class Server implements Runnable {
     private static ServerSocket socket;
     private static Socket client;
     private static String clientResponse;
     private static boolean running = true;
+
     public static void initialize() {
         try {
             socket = new ServerSocket(56789);
@@ -21,12 +22,14 @@ public class Server implements Runnable{
             e.printStackTrace();
         }
     }
+
     @Override
     public void run() {
         initialize();
         (new Thread(new ClientResponse())).start();
         (new Thread(new ServerOut())).start();
     }
+
     private class ClientResponse implements Runnable {
         @Override
         public void run() {
@@ -43,6 +46,7 @@ public class Server implements Runnable{
             }
         }
     }
+
     private class ServerOut implements Runnable {
         @Override
         public void run() {
@@ -62,9 +66,13 @@ public class Server implements Runnable{
             }
         }
     }
+
     private static String serverOut(String input) {
-        if (input.equals("asf;lasdkf;asdkf"))
-        if (Math.random() * 10 == 3) return "Jooooooooooooooooooooooooooooooooooooooohn Ceeeeeeeeeeeeenaaaaaaaa";
+        if (input.equals("asf;lasdkf;asdkf")) {
+            running = false;
+            return "Connection closed. Have a nice life";
+        }
+            if (Math.random() * 10 == 3) return "Jooooooooooooooooooooooooooooooooooooooohn Ceeeeeeeeeeeeenaaaaaaaa";
         return "Hello?";
     }
 }
