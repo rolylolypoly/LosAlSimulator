@@ -4,81 +4,67 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Will on 11/20/2015.
  */
-public class Server {
-    public static void server(int port) throws IOException {
-        port = 56789;
-        try (
-                ServerSocket serverSocket = new ServerSocket(port);
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out =
-                        new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()))
-        ) {
-
-            String inputLine, outputLine;
-            inputLine = in.readLine();
-            if (inputLine.equals("Bye.")) clientSocket.close();
-            out.println("Hello.");
-            out.println("Which module would you like to use?");
-            if (inputLine.toLowerCase().matches("(enginnering*loud)")) EngineeringRoom.howLoudIsItRightNow();
-            else if (inputLine.toLowerCase().matches("(smith*talk)")) MrSmiths.talk();
-            else {
-                out.println("Please stand by for a human operator...");
-                TimeUnit.SECONDS.sleep((long) (Math.random() * 10));
-                out.println("Hi");
-                if ((int) (Math.random() * 100) == 3) {
-                    out.println("SURPRISE SMITH!");
-                    MrSmiths.talk();
-                } else {
-                    while ((inputLine = in.readLine()) != null) {
-                        if (inputLine.equals("Bye."))
-                            break;
-                        outputLine = human(inputLine);
-                        if (outputLine.equals("0xzfl1n4klhuioyxzcv"))
-                            break;
-                        out.println(outputLine);
-                    }
-                }
-            }
+public class Server implements Runnable{
+    private static ServerSocket socket;
+    private static Socket client;
+    private static String clientResponse;
+    private static boolean running = true;
+    public static void initialize() {
+        try {
+            socket = new ServerSocket(56789);
+            client = socket.accept();
         } catch (IOException e) {
-            System.out.println("Exception caught when trying to listen on port "
-                    + port + " or listening for a connection");
-            System.out.println(e.getMessage());
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-    private static String human(String input) {
-        input = (input == "hello?") ? "yes, this is dog"
-                : (input == "hello.") ? "hi, i am tech support, you have virus"
-                : (input == "hello") ? "no one is home"
-                : emptyResponse();
-        return input;
+    @Override
+    public void run() {
+        initialize();
+        (new Thread(new ClientResponse())).start();
+        (new Thread(new ServerOut())).start();
     }
-
-    private static int patience = (int) (Math.random() * 10);
-    private static HashMap<Integer, String> responses;
-
-    static {
-        responses = new HashMap<>();
-        responses.put(0, "Is anyone there?");
-        responses.put(1, "Hello?");
-        responses.put(2, "If you do not respond, this session will be close");
-        responses.put(3, "...");
+    private class ClientResponse implements Runnable {
+        @Override
+        public void run() {
+            while (running) {
+                try (
+                        BufferedReader in = new BufferedReader(
+                                new InputStreamReader(client.getInputStream()))
+                ) {
+                    System.out.println(in.readLine());
+                    clientResponse = in.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-
-    private static String emptyResponse() {
-        patience--;
-        if (patience <= 0) return "0xzfl1n4klhuioyxzcv";
-        return responses.get((int) ((Math.random() * 10) % responses.size()));
+    private class ServerOut implements Runnable {
+        @Override
+        public void run() {
+            while (running) {
+                try (
+                        PrintWriter out =
+                                new PrintWriter(client.getOutputStream(), true)
+                ) {
+                    out.println("Hello.");
+                    out.println("Which module would you like to use?");
+                    while (clientResponse != null) {
+                        out.println(serverOut(clientResponse));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-
+    private static String serverOut(String input) {
+        if (input.equals("asf;lasdkf;asdkf"))
+        if (Math.random() * 10 == 3) return "Jooooooooooooooooooooooooooooooooooooooohn Ceeeeeeeeeeeeenaaaaaaaa";
+        return "Hello?";
+    }
 }
