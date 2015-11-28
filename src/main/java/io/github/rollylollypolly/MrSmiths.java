@@ -1,3 +1,5 @@
+package io.github.rollylollypolly;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -5,12 +7,7 @@ import java.util.Map;
  * Created by Will on 11/20/2015.
  */
 public class MrSmiths {
-    public static void talk() {
-        while (true) {
-            responses();
-        }
-    }
-    private static void responses() {
+    public static String responses() {
         Map<Integer, String> matt = new HashMap<>();
         matt.put(1, "Check your level of understanding.");
         matt.put(2, "Pubbrric Boorean.");
@@ -23,6 +20,6 @@ public class MrSmiths {
         matt.put(9, "WHAT!");
         matt.put(10, "Teenagers are stupid.");
         int number = (int) ((Math.random() * 10) % matt.size());
-        System.out.println(number);
+        return matt.get(number);
     }
 }
