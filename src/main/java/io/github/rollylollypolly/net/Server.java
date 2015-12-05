@@ -1,14 +1,14 @@
 package io.github.rollylollypolly.net;
 
+import io.github.rollylollypolly.EngineeringRoom;
+import io.github.rollylollypolly.MrSmiths;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import io.github.rollylollypolly.EngineeringRoom;
-import io.github.rollylollypolly.MrSmiths;
 
 /**
  * Created by Will on 11/20/2015.
@@ -42,8 +42,9 @@ public class Server implements Runnable {
                     BufferedReader in = new BufferedReader(
                             new InputStreamReader(client.getInputStream()))
             ) {
-                while ((clientResponse = in.readLine()) != null)
-                System.out.println("Client :" + clientResponse);
+                while (running && (clientResponse = in.readLine()) != null) {
+                    System.out.println("Client :" + clientResponse);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,7 +60,7 @@ public class Server implements Runnable {
             ) {
                 out.println("Hello.");
                 out.println("Which module would you like to use?");
-                while (clientResponse != null && running) {
+                while (running && clientResponse != null) {
                     out.println(serverOut(clientResponse));
                 }
             } catch (IOException e) {
@@ -69,15 +70,14 @@ public class Server implements Runnable {
     }
 
     private static String serverOut(String input) {
-        String out;
+        String out = null;
         if (input.equals("asf;lasdkf;asdkf")) {
             running = false;
             return "Connection closed. Have a nice life";
         }
         else if (clientResponse.matches("^(?=.*engineering)(?=.*room)(?=.*loud).*$")) out = EngineeringRoom.howLoudIsItRightNow();
         else if (clientResponse.matches("^(?=.*mr)(?=.*smith)(?=.*talk).*$")) out = MrSmiths.responses();
-        else if (Math.random() * 10 == 3) out = "Jooooooooooooooooooooooooooooooooooooooohn Ceeeeeeeeeeeeenaaaaaaaa";
-        else out = "Hello?";
+        else if ((int) (Math.random() * 10) == 3) out = "Jooooooooooooooooooooooooooooooooooooooohn Ceeeeeeeeeeeeenaaaaaaaa";
         return out;
     }
 }
