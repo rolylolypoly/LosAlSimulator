@@ -14,12 +14,12 @@ import java.net.Socket;
  * Created by Will on 11/20/2015.
  */
 public class Server implements Runnable {
-    private static ServerSocket socket;
-    private static Socket client;
-    private static String clientResponse;
-    private static boolean running = true;
+    protected static ServerSocket socket;
+    protected static Socket client;
+    protected static String clientResponse;
+    protected static boolean running = true;
 
-    public static void initialize() {
+    public void initialize() {
         try {
             socket = new ServerSocket(56789);
             client = socket.accept();
@@ -33,6 +33,17 @@ public class Server implements Runnable {
         initialize();
         (new Thread(new ClientResponse())).start();
         (new Thread(new ServerOut())).start();
+        SocketWatch();
+    }
+
+    private synchronized void SocketWatch() {
+        while (running) {
+            try {
+                socket.wait();
+            } catch (InterruptedException e) {
+                ClientResponse.class.notify();
+            }
+        }
     }
 
     public class ClientResponse implements Runnable {
@@ -42,8 +53,18 @@ public class Server implements Runnable {
                     BufferedReader in = new BufferedReader(
                             new InputStreamReader(client.getInputStream()))
             ) {
-                while (running && (clientResponse = in.readLine()) != null) {
-                    System.out.println("Client :" + clientResponse);
+                while (running) {
+                    synchronized (this) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            while (in.ready() && (clientResponse = in.readLine()) != null) {
+                                System.out.println("Client: " + clientResponse);
+                                if (clientResponse.equals("asf;lasdkf;asdkf")) running = false;
+                            }
+                        }
+
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,8 +81,9 @@ public class Server implements Runnable {
             ) {
                 out.println("Hello.");
                 out.println("Which module would you like to use?");
-                while (running && clientResponse != null) {
+                while (running) {
                     out.println(serverOut(clientResponse));
+                    out.flush();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

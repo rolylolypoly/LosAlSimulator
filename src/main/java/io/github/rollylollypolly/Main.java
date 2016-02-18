@@ -1,6 +1,6 @@
 package io.github.rollylollypolly;
 
-import io.github.rollylollypolly.net.Server;
+import io.github.rollylollypolly.people.HighSchool;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ public class Main {
         System.out.println("============== Welcome to Los Alamitos High School Simulator Version 1 x 10^-72! ===============");
         System.out.println("========By using this software you agree to all the terms, which will be specified later.=======");
         System.out.println("=======This software is provided free of charge, please provide bank account information.=======");
-        (new Thread(new Server())).start();
+        HighSchool hue = new HighSchool("Bob", 3,"apache attack helicopter", "3", .1, "Freshman", false);
+        System.out.println(hue.toString());
     }
 }

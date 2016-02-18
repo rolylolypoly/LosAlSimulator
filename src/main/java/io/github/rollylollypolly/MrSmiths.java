@@ -19,7 +19,18 @@ public class MrSmiths {
         matt.put(8, "Please take out a piece of paper for the computer science test.");
         matt.put(9, "WHAT!");
         matt.put(10, "Teenagers are stupid.");
+        matt.put(11, "You're not late, you're tardy.");
         int number = (int) ((Math.random() * 10) % matt.size());
         return matt.get(number);
+    }
+    public class Shitbox {
+        public String name;
+        public int id;
+        public boolean markedForDeath;
+        public Shitbox(String n, int i, boolean m) {
+            name = n;
+            id = i;
+            markedForDeath = m;
+        }
     }
 }
